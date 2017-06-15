@@ -21,19 +21,17 @@ let s3 = Promise.promisifyAll(new AWS.S3({region}));
 
 module.exports.handler = lambdaHandler((event) => {
 	logger.debug({event}, 'Starting to process');
-	if (event.folder === undefined || event.startingId === undefined || event.numWrites === undefined) {
+	if (event.folder === undefined || event.startingId === undefined || event.numReads === undefined) {
 		throw new Error('Missing a parameter');
 	}
-	logger.debug({event}, 'Creating Object');
-
-	const object = Array(1024000).fill('a').join('');
 	let id = event.startingId;
-	let writes = [];
-	for (let i = 0; i < event.numWrites; i++) {
-		writes.push(s3.putObjectAsync({Body: object, Bucket, Key: `folder${event.folder}/${id}`}));
+	let reads = [];
+	for (let i = 0; i < event.numReads; i++) {
+		reads.push(s3.readObjectAsync({Bucket, Key: `folder${event.folder}/${id}`}));
 		id++;
 	}
-	return Promise.all(writes).then(() => {
-		logger.debug({Length: writes.length}, 'wrote');
+	return Promise.all(reads).then(() => {
+		logger.debug({Length: reads.length}, 'Successfully read');
 	});
-});
+
+}
