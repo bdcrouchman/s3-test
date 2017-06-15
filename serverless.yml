@@ -1,0 +1,24 @@
+service: s3-test
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+        - "s3:GetObject"
+        - "s3:DeleteObject"
+        - "s3:PutObject"
+        - "s3:PutObjectACL"
+      Resource: "*"
+  memorySize: 1536 # will be inherited by all functions
+
+functions:
+  s3Writter:
+    handler: handlers/s3Writer.handler
+    timeout: 300
