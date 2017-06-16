@@ -1,18 +1,11 @@
-const numFolders = 128;
-const writesPerLambda = 1000;
-const objectsPerFolder = 1000 * 60 * 60 / 128;
-let nextFolder = 0;
-let curPosition = new Map();
+const numWrites = 1000; // writes per lambda
+const skipBy = 3600; // should equal run# for lambda-shearer
+//
 module.exports = function(index) {
-	let key = nextFolder;
-	let startId = curPosition.has(key) ? curPosition.get(key) : 0;
-	let numWrites = Math.min(objectsPerFolder - startId, writesPerLambda);
-	curPosition.set(key, startId + numWrites);
-	nextFolder = (nextFolder + 1) % numFolders;
-	console.log(`Creating JSON: key ${key}, startingId ${startId}, numWrites ${numWrites}`)
+	console.log(`Creating JSON: startingId ${index}, numWrites ${numWrites}, skipBy: ${skipBy}`)
 	return {
-		folder: key,
-		startingId: startId,
-		numWrites: numWrites
+		startingId: index,
+		numWrites: numWrites,
+		skipBy: skipBy
 	};
 }

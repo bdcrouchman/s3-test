@@ -1,11 +1,10 @@
+let skipBy = 0;
+let numWrites = 1;
 module.exports = function(index) {
-	let key = 0;
-	let startId = 0;
-	let numWrites = 1;
-	console.log(`Creating JSON: key ${key}, startingId ${startId}, numWrites ${numWrites}`)
+	console.log(`Creating JSON: startingId 0, numWrites ${numWrites}, skipBy: ${skipBy}`)
 	return {
-		folder: key,
-		startingId: startId,
-		numWrites: numWrites
+		startingId: 0,
+		numWrites: numWrites,
+    skipBy: skipBy
 	};
 }

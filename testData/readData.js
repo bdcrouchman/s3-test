@@ -1,18 +1,10 @@
-const numFolders = 128;
-const readsPerLambda = 1000;
-const objectsPerFolder = 1000 * 60 * 60 / 128;
-let nextFolder = 0;
-let curPosition = new Map();
+const numReads = 1000;
+const skipBy = 3600;
 module.exports = function(index) {
-	let key = nextFolder;
-	let startId = curPosition.has(key) ? curPosition.get(key) : 0;
-	let numReads = Math.min(objectsPerFolder - startId, readsPerLambda);
-	curPosition.set(key, startId + numReads);
-	nextFolder = (nextFolder + 1) % numFolders;
-	console.log(`Creating JSON: key ${key}, startingId ${startId}, numReads ${numReads}`)
+	console.log(`Creating JSON: startingId ${index}, numReads ${numReads}, skipBy: ${skipBy}`)
 	return {
-		folder: key,
 		startingId: startId,
-		numReads: numReads
+		numReads: numReads,
+    skipBy: skipBy
 	};
 }

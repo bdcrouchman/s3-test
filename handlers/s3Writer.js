@@ -16,13 +16,14 @@ const logger = bunyan.createLogger({
 
 const region = 'us-east-1',
 //	numFolders = 128,
-	Bucket = 'bcrouchman-s3-test'
+	Bucket = 'bcrouchman-s3-test',
+	folderNumber = Math.pow(16, 4);
 
 let s3 = Promise.promisifyAll(new AWS.S3({region}));
 
 module.exports.handler = lambdaHandler((event) => {
 	logger.debug({event}, 'Starting to process');
-	if (event.folder === undefined || event.startingId === undefined || event.numWrites === undefined) {
+	if (event.startingId === undefined || event.numWrites === undefined || event.skipBy === undefined) {
 		throw new Error('Missing a parameter');
 	}
 	logger.debug({event}, 'Creating Object');
@@ -31,8 +32,15 @@ module.exports.handler = lambdaHandler((event) => {
 	let id = event.startingId;
 	let writes = [];
 	for (let i = 0; i < event.numWrites; i++) {
-		writes.push(s3.putObjectAsync({Body: object, Bucket, Key: `folder${event.folder}/${id}`}));
-		id++;
+		// 4 digit hex prefix. according to docs, can scale to "millions per sec"
+		let folder = id % folderNumber;
+		let folderString = folder.toString(16);
+		while (folderString.length < 4) {
+			folderString = '0'.concat(folderString);
+		}
+		logger.debug({folder: folderString}, 'creatingFolder')
+		writes.push(s3.putObjectAsync({Body: object, Bucket, Key: `${folderString}/${id}`}));
+		id += event.skipBy;
 	}
 	return Promise.all(writes).then(() => {
 		logger.debug({Length: writes.length}, 'wrote');
