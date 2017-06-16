@@ -1,3 +1,4 @@
+'use strict';
 const
 	Promise = require('bluebird'),
 	bunyan = require('bunyan'),
@@ -15,7 +16,7 @@ const logger = bunyan.createLogger({
 
 const region = 'us-east-1',
 //	numFolders = 128,
-	Bucket = 'bcrouchman-s3-test',
+	Bucket = 'bcrouchman-s3-test'
 
 let s3 = Promise.promisifyAll(new AWS.S3({region}));
 

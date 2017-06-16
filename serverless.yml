@@ -1,8 +1,10 @@
-service: s3-test
+service: bcrouchman-s3-test
 
 provider:
   name: aws
   runtime: nodejs6.10
+  stage: dev
+  profile: default
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -21,4 +23,7 @@ provider:
 functions:
   s3Writter:
     handler: handlers/s3Writer.handler
+    timeout: 300
+  s3Reader:
+    handler: handlers/s3Reader.handler
     timeout: 300

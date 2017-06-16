@@ -5,7 +5,13 @@
   "main": "src/index.js",
   "scripts": {
     "deploy":"npm install && serverless deploy",
-    "writePerfTest": "lambda-shearer -p testData/createData.js -r us-east-1 -s 1536 -n 3712 -c 128"
+    "writeSingleMessage": "lambda-shearer -p testData/createSingleMessage -r us-east-1 -s 1536 -n 1 -c 1 -l",
+    "readSingleMessage": "lambda-shearer -p testData/readSingleMessage -r us-east-1 -s 1536 -n 1 -c 1 -l",
+    "readSingleFolder": "lambda-shearer -p testData/readSingleFolder -r us-east-1 -s 1536 -n 28 -c 1 -l",
+    "writeMediumTest": "lambda-shearer -p testData/createData -r us-east-1 -s 1536 -n 256 -c 128 -l",
+    "readMediumTest": "lambda-shearer -p testData/readData -r us-east-1 -s 1536 -n 256 -c 128 -l",
+    "writePerfTest": "lambda-shearer -p testData/createData.js -r us-east-1 -s 1536 -n 3712 -c 128 -l",
+    "readPerfTest": "lambda-shearer -p testData/readData.js -r us-east-1 -s 1536 -n 3584 -c 128 -l"
   },
   "devDependencies": {
     "lambda-shearer": "1.1.0"

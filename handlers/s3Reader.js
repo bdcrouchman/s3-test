@@ -1,3 +1,4 @@
+'use strict';
 const
 	Promise = require('bluebird'),
 	bunyan = require('bunyan'),
@@ -15,7 +16,7 @@ const logger = bunyan.createLogger({
 
 const region = 'us-east-1',
 //	numFolders = 128,
-	Bucket = 'bcrouchman-s3-test',
+	Bucket = 'bcrouchman-s3-test'
 
 let s3 = Promise.promisifyAll(new AWS.S3({region}));
 
@@ -24,14 +25,25 @@ module.exports.handler = lambdaHandler((event) => {
 	if (event.folder === undefined || event.startingId === undefined || event.numReads === undefined) {
 		throw new Error('Missing a parameter');
 	}
+  let numSuccessful = 0;
+  let numFailed = 0;
 	let id = event.startingId;
 	let reads = [];
+  logger.debug('starting to read')
 	for (let i = 0; i < event.numReads; i++) {
-		reads.push(s3.readObjectAsync({Bucket, Key: `folder${event.folder}/${id}`}));
+		reads.push(s3.getObjectAsync({Bucket, Key: `folder${event.folder}/${id}`}).then(() => {
+      numSuccessful++;
+    }).catch((error) => {
+      //Couple of missing messages due to poor planning during writing. Just don't fail an entire batch
+      numFailed++;
+    }));
 		id++;
 	}
-	return Promise.all(reads).then(() => {
-		logger.debug({Length: reads.length}, 'Successfully read');
+	return Promise.all(reads).then((results) => {
+    // Parse one message to ensure no funny business is happening
+		logger.debug({Length: reads.length, Success: numSuccessful, Failed: numFailed}, 'Successfully read');
+    if (numFailed > 100) {
+      throw new Error('Failed count too large');
+    }
 	});
-
-}
+});

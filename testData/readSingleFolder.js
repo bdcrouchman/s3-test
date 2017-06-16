@@ -1,15 +1,14 @@
-const numFolders = 128;
+//Arbitrarily and randomly chosen
+const folder = 5;
 const readsPerLambda = 1000;
 const objectsPerFolder = 1000 * 60 * 60 / 128;
-let nextFolder = 0;
-let curPosition = new Map();
+let curPosition = 0
 module.exports = function(index) {
-	let key = nextFolder;
-	let startId = curPosition.has(key) ? curPosition.get(key) : 0;
+	let key = folder;
+	let startId = curPosition;
 	let numReads = Math.min(objectsPerFolder - startId, readsPerLambda);
-	curPosition.set(key, startId + numReads);
-	nextFolder = (nextFolder + 1) % numFolders;
 	console.log(`Creating JSON: key ${key}, startingId ${startId}, numReads ${numReads}`)
+  curPosition += numReads
 	return {
 		folder: key,
 		startingId: startId,

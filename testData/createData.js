@@ -9,7 +9,7 @@ module.exports = function(index) {
 	let numWrites = Math.min(objectsPerFolder - startId, writesPerLambda);
 	curPosition.set(key, startId + numWrites);
 	nextFolder = (nextFolder + 1) % numFolders;
-	console.log(`Creating JSON: key ${key}, startingId ${startingId}, numWrites ${numWrites}`)
+	console.log(`Creating JSON: key ${key}, startingId ${startId}, numWrites ${numWrites}`)
 	return {
 		folder: key,
 		startingId: startId,
