@@ -1,11 +1,11 @@
-const numWrites = 1000; // writes per lambda
-const skipBy = 3600; // should equal run# for lambda-shearer
-//
+const numWrites = 100; // writes per lambda
+let key = 0;
 module.exports = function(index) {
-	console.log(`Creating JSON: startingId ${index}, numWrites ${numWrites}, skipBy: ${skipBy}`)
+	const startingId = key;
+	console.log(`Creating JSON: startingId ${startingId}, numWrites ${numWrites}`)
+	key += numWrites;
 	return {
-		startingId: index,
-		numWrites: numWrites,
-		skipBy: skipBy
+		startingId: startingId,
+		numWrites: numWrites
 	};
 }

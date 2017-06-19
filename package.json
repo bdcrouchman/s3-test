@@ -9,8 +9,8 @@
     "readSingleMessage": "lambda-shearer -p testData/readSingleMessage -r us-east-1 -s 1536 -n 1 -c 1 -l",
     "writeMediumTest": "lambda-shearer -p testData/createData -r us-east-1 -s 1536 -n 256 -c 128 -l",
     "readMediumTest": "lambda-shearer -p testData/readData -r us-east-1 -s 1536 -n 256 -c 128 -l",
-    "writePerfTest": "lambda-shearer -p testData/createData.js -r us-east-1 -s 1536 -n 3600 -c 128 -l",
-    "readPerfTest": "lambda-shearer -p testData/readData.js -r us-east-1 -s 1536 -n 3600 -c 128 -l"
+    "writePerfTest": "lambda-shearer -p testData/createData.js -r us-east-1 -s 1536 -n 21170 -c 100 -l",
+    "readPerfTest": "lambda-shearer -p testData/readData.js -r us-east-1 -s 1536 -n 2217 -c 100 -l"
   },
   "devDependencies": {
     "lambda-shearer": "1.1.0"
@@ -18,8 +18,10 @@
   "dependencies": {
     "aws-sdk": "2.58.0",
     "bluebird": "3.4.7",
+    "retry-bluebird": "0.1.1",
     "bunyan": "1.8.10",
     "lambda-handler-as-promised": "1.2.2",
-    "lodash": "4.17.3"
+    "lodash": "4.17.3",
+    "crypto-js": "3.1.9-1"
   }
 }

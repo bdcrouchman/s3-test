@@ -4,6 +4,7 @@ const
 	bunyan = require('bunyan'),
 	lambdaHandler = require('lambda-handler-as-promised'),
 //	_ = require('lodash'),
+	cryptoJS = require("crypto-js"),
 	AWS = require('aws-sdk');
 
 const logger = bunyan.createLogger({
@@ -16,14 +17,13 @@ const logger = bunyan.createLogger({
 
 const region = 'us-east-1',
 //	numFolders = 128,
-	Bucket = 'bcrouchman-s3-test',
-	folderNumber = Math.pow(16, 4);
+	Bucket = 'bcrouchman-s3-test';
 
 let s3 = Promise.promisifyAll(new AWS.S3({region}));
 
 module.exports.handler = lambdaHandler((event) => {
 	logger.debug({event}, 'Starting to process');
-	if (event.startingId === undefined || event.numReads === undefined || event.skipBy === undefined) {
+	if (event.startingId === undefined || event.numReads === undefined) {
 		throw new Error('Missing a parameter');
 	}
   let numSuccessful = 0;
@@ -32,15 +32,14 @@ module.exports.handler = lambdaHandler((event) => {
 	let reads = [];
   logger.debug('starting to read')
 	for (let i = 0; i < event.numReads; i++) {
-		let folder = id % folderNumber;
-		let folderString = folder.toString(16);
-		reads.push(s3.getObjectAsync({Bucket, Key: `${folderString}/${id}`}).then(() => {
+		let folder = cryptoJS.MD5(id.toString()).toString(cryptoJS.enc.Hex).substring(0, 4);
+		reads.push(s3.getObjectAsync({Bucket, Key: `${folder}/${id}`}).then(() => {
       numSuccessful++;
     }).catch((error) => {
       //Couple of missing messages due to poor planning during writing. Just don't fail an entire batch
       numFailed++;
     }));
-		id += event.skipBy;
+		id++;
 	}
 	return Promise.all(reads).then((results) => {
     // Parse one message to ensure no funny business is happening

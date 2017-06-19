@@ -1,10 +1,11 @@
 const numReads = 1000;
-const skipBy = 3600;
+let key = 0;
 module.exports = function(index) {
-	console.log(`Creating JSON: startingId ${index}, numReads ${numReads}, skipBy: ${skipBy}`)
+	const startingId = key;
+	console.log(`Creating JSON: startingId ${startingId}, numReads ${numReads}`)
+	key += numWrites
 	return {
-		startingId: startId,
-		numReads: numReads,
-    skipBy: skipBy
+		startingId: startingId,
+		numReads: numReads
 	};
 }
